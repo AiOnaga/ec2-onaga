@@ -28,6 +28,8 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'icon_path' => fake()->unique()->text(maxNbChars: 10),
+            'discription' => fake()->text(maxNbChars: 30),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
             'created_at' => now(),
