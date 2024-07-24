@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'icon_path' => fake()->unique()->text(maxNbChars: 10),
+            'nick_name' => $this->faker->userName,
             'discription' => fake()->text(maxNbChars: 30),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
