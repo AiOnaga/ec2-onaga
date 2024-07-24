@@ -36,7 +36,7 @@ return [
 
             // Logs in a user if they are authenticated. In contrast to Laravel's 'auth'
             // middleware, this delegates auth and permission checks to the field level.
-            Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
+            \Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
 
             // Logs every incoming GraphQL query.
             // Nuwave\Lighthouse\Http\Middleware\LogGraphQLQueries::class,
@@ -148,7 +148,7 @@ return [
     'parse_source_location' => true,
 
     /*
-    |--------------------------------------------------------------------------
+    |--------------------------------------'------------------------------------
     | Namespaces
     |--------------------------------------------------------------------------
     |
@@ -159,7 +159,7 @@ return [
     */
 
     'namespaces' => [
-        'models' => ['App', 'App\\Models'],
+        'models' => ['App\\Models'],
         'queries' => 'App\\GraphQL\\Queries',
         'mutations' => 'App\\GraphQL\\Mutations',
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
@@ -167,8 +167,9 @@ return [
         'interfaces' => 'App\\GraphQL\\Interfaces',
         'unions' => 'App\\GraphQL\\Unions',
         'scalars' => 'App\\GraphQL\\Scalars',
-        'directives' => 'App\\GraphQL\\Directives',
+        'directives' => ['App\\GraphQL\\Directives'],
         'validators' => 'App\\GraphQL\\Validators',
+        'resolvers' => 'App\\GraphQL\\Resolvers',
     ],
 
     /*
