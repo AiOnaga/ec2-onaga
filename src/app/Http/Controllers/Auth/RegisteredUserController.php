@@ -40,6 +40,10 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'nick_name' => $request->name,
+            'icon_path' => 'https://ui-avatars.com/api/?name='.$request->name,
+            'discription' => 'Hello, I am '.$request->name,
+
         ]);
 
         event(new Registered($user));

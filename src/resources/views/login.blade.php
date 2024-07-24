@@ -11,7 +11,8 @@
 <div class="wrapper">
     <div class="container">
         <h1>Login</h1>
-        <form class="form">
+        <form class="form" action="{{ route('login') }}" method="POST">
+            @csrf
             <input type="email" name="email" placeholder="username">
             <input type="password" name="password" placeholder="password">
             <button type="'submit" id="login-button">Login</button>
