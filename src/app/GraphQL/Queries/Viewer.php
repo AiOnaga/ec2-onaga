@@ -8,20 +8,22 @@ use Illuminate\Support\Facades\Log;
 
 class Viewer
 {
-        public function __invoke($root, array $args, GraphQLContext $context)
+    public function __invoke($root, array $args, GraphQLContext $context)
     {
-        Log::info('Resolving viewer');
+        Log::info('Resolving viewer without context');
 
-        // 特定のユーザーを取得（例としてIDが1のユーザーを取得）
-        $user = User::find(1);
+        //ログインユーザーの情報を取得
+        $user = $context->user();
 
-        if (!$user) {
+        // デバッグのために、取得したユーザー情報をログに記録
+        if ($user) {
+            Log::info('User found:', ['user' => $user]);
+        } else {
             Log::error('User not found');
             throw new \Exception('User not found');
         }
 
-        Log::info('User found:', ['user' => $user]);
-
+        // 取得したユーザーを返す
         return $user;
     }
 }

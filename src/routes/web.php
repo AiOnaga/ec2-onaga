@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -28,4 +29,15 @@ require __DIR__.'/auth.php';
 
 Route::get('/login', function () {
     return view('login');
+});
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });
