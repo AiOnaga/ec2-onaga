@@ -1,1 +1,189 @@
-"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")"Indicates what fields are available at the top level of a query operation."type Query {    "ログインユーザー情報"    viewer: Viewer @field(resolver: "App\\GraphQL\\Queries\\Viewer")    "プロフィール情報"    profile(id: Int! @eq): Profile @field(resolver: "App\\GraphQL\\Resolvers\\ProfileResolver@resolveProfile")    "投稿情報"    post(id: Int! @eq): Post @find    "全投稿一覧"    allPosts: [Post] @paginate(type: SIMPLE,defaultCount: 10)    "ログインユーザーの投稿一覧"    postsByUser: [Post] @field(resolver: "App\\GraphQL\\Queries\\PostsByUser")    "カテゴリー別投稿一覧"    postsByCategory(categoryId: Int!): [Post] @field(resolver: "App\\GraphQL\\Queries\\PostsByCategory")    "ログインユーザーがブックマークした記事一覧"    postByBookmark: [Post] @field(resolver: "App\\GraphQL\\Queries\\PostByBookmark")    "ブックマーク数"    bookmarkCount(userId: Int! @eq): Int! @field(resolver: "App\\GraphQL\\Queries\\BookmarkCount")    "コメント情報"    comment(id: Int! @eq): Comment! @find    "全コメント一覧"    comments : [Comment] @all    "投稿に対するコメント一覧"    commentByPost(postId: Int!): [Comment] @paginate(type: SIMPLE,defaultCount: 5)    "カテゴリー情報"    category(id: Int! @eq): Category! @find    "全カテゴリー一覧"    allCategories: [Category] @all    "フォローしているユーザー一覧"    followings(userId: Int!): [Profile] @field(resolver: "App\\GraphQL\\Queries\\Followings")    "フォロワー一覧"    followers(userId: Int!): [Profile] @field(resolver: "App\\GraphQL\\Queries\\Followers")    "いいね数：実実装"    likeCount(userId: Int!): Int! @find    "いいねした記事一覧：実実装"    likeViewerList(userId: Int!):Int @find    "おすすめ記事をランダムでとっていくる：実実装"    postByRecommend: [Post] @paginate(type: SIMPLE,defaultCount: 10)}type Mutation {    "ユーザーログイン"    login(email: String!, password: String!): Viewer @field(resolver: "App\\GraphQL\\Mutations\\Login")    "投稿作成"    createPost(input: createPostInput! @spread): Post @create    "投稿編集"    editPost(input: editPostInput! @spread): Post @update    "投稿削除"    deletePost(id: Int! @whereKey): Post @delete}type Viewer {    id: Int    "名前"    name: String!    "メールアドレス"    email: String!    "プロフィール"    profile: Profile!}"プロフィール"type Profile {    "ニックネーム"    nickName: String! @rename(attribute: "nick_name")    "アイコンURL"    iconUrl: String @rename(attribute: "icon_path")    "紹介文"    discription: String @rename(attribute: "discription")}"記事"type Post{    id: Int    "タイトル"    title: String!    "本文"    text: String! @rename(attribute: "content")    "投稿画像"    postImage: [PostImage] @hasMany(relation: "images")    "作成日"    created_at: DateTime!    "更新日"    updated_at: DateTime!    "コメント"    comments: [Comment] @hasMany(relation: "comments")    "投稿主情報"    author: Viewer! @belongsTo(relation: "user")    "カテゴリー：一つの記事に複数のカテゴリーが紐づく"    categories: [Category!]! @belongsToMany(relation: "categories")    "お気に入り数：未作成"    bookmarkCount: Int    "いいね数：未作成"    likeCount: Int}type PostImage@model(class: "App\\Models\\Image"){    "画像ID"    id: Int!    "画像URL"    url: String! @rename(attribute: "path")}"コメント"type Comment{    "コメントID"    id: Int!    "ユーザーID"    userId: Int! @rename(attribute: "user_id")    "記事ID"    postId: Int! @rename(attribute: "post_id")    "投稿主情報"    author: Profile! @belongsTo(relation: "user")    "コメント"    text: String! @rename(attribute: "content")    "作成日"    created_at: DateTime!    "更新日"    updated_at: DateTime!}type Category{    "カテゴリーID"    id: Int!    "カテゴリ名"    categoryName: String! @rename(attribute: "name")    "作成日"    created_at: DateTime!    "更新日"    updated_at: DateTime!}input createViewerInput{    "名前"    name: String!    "メールアドレス"    email: String!    "プロフィール"    profile: createProfileInput!}input createProfileInput{    "ユーザーID"    userId: Int!    "ニックネーム"    nickName: String!    "アイコンURL"    iconUrl:String    "紹介文"    discription: String}input createPostInput{    userId: Int! @rename(attribute: "user_id")    title: String!    text: String! @rename(attribute: "content")}input editPostInput{    id: Int!    title: String    text: String @rename(attribute: "content")}
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"Indicates what fields are available at the top level of a query operation."
+type Query {
+
+    "ログインユーザー情報"
+    viewer: Viewer @field(resolver: "App\\GraphQL\\Queries\\Viewer")
+
+    "プロフィール情報"
+    profile(id: Int! @eq): Profile @field(resolver: "App\\GraphQL\\Resolvers\\ProfileResolver@resolveProfile")
+
+    "投稿情報"
+    post(id: Int! @eq): Post @find
+
+    "全投稿一覧"
+    allPosts: [Post] @all
+
+    "ログインユーザーの投稿一覧"
+    postsByUser: [Post] @field(resolver: "App\\GraphQL\\Queries\\PostsByUser")
+
+    "カテゴリー別投稿一覧"
+    postsByCategory(categoryId: Int!): [Post] @field(resolver: "App\\GraphQL\\Queries\\PostsByCategory")
+
+    "ログインユーザーがブックマークした記事一覧"
+    postByBookmark: [Post] @field(resolver: "App\\GraphQL\\Queries\\PostByBookmark")
+
+    "ブックマーク数"
+    bookmarkCount(userId: Int! @eq): Int! @field(resolver: "App\\GraphQL\\Queries\\BookmarkCount")
+
+    "コメント情報"
+    comment(id: Int! @eq): Comment! @find
+
+    "全コメント一覧"
+    comments : [Comment] @all
+
+    "投稿に対するコメント一覧"
+    commentByPost(postId: Int!): [Comment] @paginate(type: SIMPLE,defaultCount: 5)
+
+    "カテゴリー情報"
+    category(id: Int! @eq): Category! @find
+
+    "全カテゴリー一覧"
+    allCategories: [Category] @all
+
+    "フォローしているユーザー一覧"
+    followings(userId: Int!): [Profile] @field(resolver: "App\\GraphQL\\Queries\\Followings")
+
+    "フォロワー一覧"
+    followers(userId: Int!): [Profile] @field(resolver: "App\\GraphQL\\Queries\\Followers")
+
+    "いいね数：実実装"
+    likeCount(userId: Int!): Int! @find
+
+    "いいねした記事一覧：実実装"
+    likeViewerList(userId: Int!):Int @find
+
+    "おすすめ記事をランダムでとっていくる：実実装"
+    postByRecommend: [Post] @paginate(type: SIMPLE,defaultCount: 10)
+
+}
+
+type Mutation {
+    "ユーザーログイン"
+    login(email: String!, password: String!): Viewer @field(resolver: "App\\GraphQL\\Mutations\\Login")
+
+
+    "投稿作成"
+    createPost(input: createPostInput! @spread): Post @create
+
+    "投稿編集"
+    editPost(input: editPostInput! @spread): Post @update
+
+    "投稿削除"
+    deletePost(id: Int! @whereKey): Post @delete
+}
+
+type Viewer {
+    id: Int
+    "名前"
+    name: String!
+    "メールアドレス"
+    email: String!
+    "プロフィール"
+    profile: Profile!
+}
+
+"プロフィール"
+type Profile {
+    "ニックネーム"
+    nickName: String! @rename(attribute: "nick_name")
+    "アイコンURL"
+    iconUrl: String @rename(attribute: "icon_path")
+    "紹介文"
+    discription: String @rename(attribute: "discription")
+}
+
+"記事"
+type Post{
+    id: Int
+    "タイトル"
+    title: String!
+    "本文"
+    text: String! @rename(attribute: "content")
+    "投稿画像"
+    postImage: [PostImage] @hasMany(relation: "images")
+    "作成日"
+    created_at: DateTime!
+    "更新日"
+    updated_at: DateTime!
+    "コメント"
+    comments: [Comment] @hasMany(relation: "comments")
+    "投稿主情報"
+    author: Viewer! @belongsTo(relation: "user")
+    "カテゴリー：一つの記事に複数のカテゴリーが紐づく"
+    categories: [Category!]! @belongsToMany(relation: "categories")
+    "お気に入り数：未作成"
+    bookmarkCount: Int
+    "いいね数：未作成"
+    likeCount: Int
+}
+
+type PostImage@model(class: "App\\Models\\Image"){
+    "画像ID"
+    id: Int!
+    "画像URL"
+    url: String! @rename(attribute: "path")
+}
+
+"コメント"
+type Comment{
+    "コメントID"
+    id: Int!
+    "ユーザーID"
+    userId: Int! @rename(attribute: "user_id")
+    "記事ID"
+    postId: Int! @rename(attribute: "post_id")
+    "投稿主情報"
+    author: Profile! @belongsTo(relation: "user")
+    "コメント"
+    text: String! @rename(attribute: "content")
+    "作成日"
+    created_at: DateTime!
+    "更新日"
+    updated_at: DateTime!
+}
+
+type Category{
+    "カテゴリーID"
+    id: Int!
+    "カテゴリ名"
+    categoryName: String! @rename(attribute: "name")
+    "作成日"
+    created_at: DateTime!
+    "更新日"
+    updated_at: DateTime!
+}
+
+input createViewerInput{
+    "名前"
+    name: String!
+    "メールアドレス"
+    email: String!
+    "プロフィール"
+    profile: createProfileInput!
+}
+
+input createProfileInput{
+    "ユーザーID"
+    userId: Int!
+    "ニックネーム"
+    nickName: String!
+    "アイコンURL"
+    iconUrl:String
+    "紹介文"
+    discription: String
+}
+
+input createPostInput{
+    userId: Int! @rename(attribute: "user_id")
+    title: String!
+    text: String! @rename(attribute: "content")
+}
+
+input editPostInput{
+    id: Int!
+    title: String
+    text: String @rename(attribute: "content")
+}
