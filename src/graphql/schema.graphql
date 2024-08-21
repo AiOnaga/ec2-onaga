@@ -64,6 +64,8 @@ type Mutation {
     "ユーザーログイン"
     login(email: String!, password: String!): Viewer @field(resolver: "App\\GraphQL\\Mutations\\Login")
 
+    "ユーザーログアウト"
+    logout: Viewer @guard
 
     "投稿作成"
     createPost(input: createPostInput! @spread): Post @create
