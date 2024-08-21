@@ -37,7 +37,7 @@ class Post extends Model
 
     public function bookmarks()
     {
-        return $this->belongsToMany(User::class, 'bookmarks');
+        return $this->belongsToMany(User::class, 'bookmarks', 'post_id', 'user_id')->withTimestamps();
     }
 
     public function images()

@@ -4,14 +4,11 @@ namespace App\GraphQL\Queries;
 
 use App\Models\User;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use Illuminate\Support\Facades\Log;
 
 class Viewer
 {
     public function __invoke($root, array $args, GraphQLContext $context)
     {
-        Log::info('Resolving viewer without context');
-
         //ログインユーザーの情報を取得
         $user = $context->user();
 
