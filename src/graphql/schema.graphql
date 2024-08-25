@@ -60,7 +60,7 @@ type Query {
 type Mutation {
 
     "ユーザー登録"
-    CreateUser(input: createViewerInput! @spread): Viewer @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
+    CreateUser(input: createViewerInput! ): Viewer @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
 
     "ユーザーログイン"
     login(email: String!, password: String!): Viewer @field(resolver: "App\\GraphQL\\Mutations\\Login")
@@ -172,6 +172,8 @@ input createViewerInput{
     name: String!
     "メールアドレス"
     email: String!
+    "パスワード"
+    password: String!
     "プロフィール"
     profile: createProfileInput!
 }

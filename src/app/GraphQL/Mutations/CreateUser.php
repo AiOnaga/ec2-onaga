@@ -2,21 +2,30 @@
 
 namespace App\GraphQL\Mutations;
 
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
+
 final readonly class CreateUser
 {
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args)
     {
         $input = $args['input'];
+        $profileData = $input['profile'];
+        // Emailが既に存在するかを確認
+        $existingUser = User::where('email', $input['email'])->first();
 
-        //userの作成
+        if ($existingUser) {
+            throw new \Exception('The email address is already registered.');
+        }
+
         $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => bcrypt($input['password']),
-            'nickName' => $input['profile']['nickName'],
-            'iconUrl' => $input['profile']['iconUrl'],
-            'discription' => $input['profile']['discription'],
+            'nick_name' => $profileData['nickName'],
+            'icon_path' => $profileData['iconUrl'],
+            'discription' => $profileData['discription'],
         ]);
 
         return $user;
