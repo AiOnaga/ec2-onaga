@@ -40,6 +40,12 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'bookmarks', 'post_id', 'user_id')->withTimestamps();
     }
 
+    //記事のブックマーク数を取得
+    public function bookmarkCount()
+    {
+        return $this->bookmarks()->count();
+    }
+
     public function images()
     {
         return $this->hasMany(Image::class, 'post_id');
