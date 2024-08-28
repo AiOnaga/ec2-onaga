@@ -58,7 +58,6 @@ type Query {
 }
 
 type Mutation {
-
     "ユーザー登録"
     CreateUser(input: createViewerInput! ): Viewer @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
 
@@ -76,6 +75,16 @@ type Mutation {
 
     "投稿削除"
     deletePost(id: Int! @whereKey): Post @delete
+
+    "コメント作成"
+    createComment(postId: Int!, text: String!): Comment @field(resolver: "App\\GraphQL\\Mutations\\CreateComment")
+
+    "コメント編集"
+    editComment(input: editCommentInput! @spread): Comment @update
+
+    "コメント削除"
+    deleteComment(id: Int! @whereKey): Comment @delete
+
 }
 
 type Viewer {
@@ -196,5 +205,10 @@ input createPostInput{
 input editPostInput{
     id: Int!
     title: String
+    text: String @rename(attribute: "content")
+}
+
+input editCommentInput{
+    id: Int!
     text: String @rename(attribute: "content")
 }
