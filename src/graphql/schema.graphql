@@ -85,6 +85,18 @@ type Mutation {
     "コメント削除"
     deleteComment(id: Int! @whereKey): Comment @delete
 
+    "カテゴリー作成"
+    createCategory(categoryName: String!@rename(attribute: "name")): Category @create
+
+    "カテゴリー編集"
+    editCategory(id: Int!, categoryName: String!@rename(attribute: "name")): Category @update
+
+    "カテゴリー削除"
+    deleteCategory(id: Int! @whereKey): Category @delete
+
+    "ブックマークする・解除"
+    bookmarkPost(postId: Int!): Post @field(resolver: "App\\GraphQL\\Mutations\\BookmarkPost")
+
 }
 
 type Viewer {
