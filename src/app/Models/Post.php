@@ -35,6 +35,12 @@ class Post extends Model
         return $this->morphMany(Like::class, 'likeable');
     }
 
+    //記事のいいね数を取得
+    public function likeCount()
+    {
+        return $this->likes()->count();
+    }
+
     public function bookmarks()
     {
         return $this->belongsToMany(User::class, 'bookmarks', 'post_id', 'user_id')->withTimestamps();

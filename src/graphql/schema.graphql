@@ -97,6 +97,8 @@ type Mutation {
     "ブックマークする・解除"
     bookmarkPost(postId: Int!): Post @field(resolver: "App\\GraphQL\\Mutations\\BookmarkPost")
 
+    "いいねする・解除"
+    like(targetId: Int!, type: String!): LikePayload @field(resolver: "App\\GraphQL\\Mutations\\Like")
 }
 
 type Viewer {
@@ -114,6 +116,10 @@ type Viewer {
 "プロフィール"
 type Profile {
     id: ID @globalId
+
+    "ユーザーID"
+    userId: Int! @rename(attribute: "id")
+
     "ニックネーム"
     nickName: String! @rename(attribute: "nick_name")
     "アイコンURL"
@@ -123,7 +129,7 @@ type Profile {
 }
 
 "記事"
-type Post{
+type Post implements Likable{
     id: ID @globalId
     "投稿ID"
     postId: Int! @rename(attribute: "id")
@@ -140,13 +146,13 @@ type Post{
     "コメント"
     comments: [Comment] @hasMany(relation: "comments")
     "投稿主情報"
-    author: Viewer! @belongsTo(relation: "user")
+    author: Profile! @belongsTo(relation: "user")
     "カテゴリー：一つの記事に複数のカテゴリーが紐づく"
     categories: [Category!]! @belongsToMany(relation: "categories")
     "お気に入り数：未作成"
     bookmarkCount: Int @method(name: "bookmarkCount")
     "いいね数：未作成"
-    likeCount: Int
+    likeCount: Int @method(name: "likeCount")
 }
 
 type PostImage@model(class: "App\\Models\\Image"){
@@ -158,7 +164,7 @@ type PostImage@model(class: "App\\Models\\Image"){
 }
 
 "コメント"
-type Comment{
+type Comment implements Likable{
     id: ID @globalId
     "コメントID"
     commentId: Int! @rename(attribute: "id")
@@ -174,6 +180,8 @@ type Comment{
     created_at: DateTime!
     "更新日"
     updated_at: DateTime!
+    "いいね数"
+    likeCount: Int @method(name: "likeCount")
 }
 
 type Category{
@@ -186,6 +194,10 @@ type Category{
     created_at: DateTime!
     "更新日"
     updated_at: DateTime!
+}
+
+type LikePayload {
+    likable: Likable! @interface(resolveType: "App\\GraphQL\\Interfaces\\Likable")
 }
 
 input createViewerInput{
@@ -223,4 +235,10 @@ input editPostInput{
 input editCommentInput{
     id: Int!
     text: String @rename(attribute: "content")
+}
+
+interface Likable{
+    id: ID @globalId
+    "いいね数"
+    likeCount: Int
 }

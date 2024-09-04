@@ -30,4 +30,10 @@ class Comment extends Model
     {
         return $this->morphMany(Like::class, 'likeable');
     }
+
+    //コメントのいいね数を取得
+    public function likeCount()
+    {
+        return $this->likes()->count();
+    }
 }
